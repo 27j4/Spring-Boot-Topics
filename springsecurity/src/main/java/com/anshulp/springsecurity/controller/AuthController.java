@@ -6,6 +6,8 @@ import com.anshulp.springsecurity.dto.RefreshTokenRequest;
 import com.anshulp.springsecurity.dto.RegisterRequest;
 import com.anshulp.springsecurity.service.AuthService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -19,32 +21,58 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(
+            @RequestBody LoginRequest request,
+            HttpServletResponse response) {
 
-        AuthResponse response = authService.login(request);
+        AuthResponse authResponse = authService.login(request);
 
-        return ResponseEntity.ok(response);
+        Cookie refreshCookie = new Cookie(
+                "refreshToken",
+                authResponse.getRefreshToken()
+        );
+
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false); // true in production (HTTPS)
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge(7 * 24 * 60 * 60);
+
+        response.addCookie(refreshCookie);
+
+        return ResponseEntity.ok(
+                AuthResponse.builder()
+                        .accessToken(authResponse.getAccessToken())
+                        .build()
+        );
     }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-
         return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(
-            @RequestBody RefreshTokenRequest request) {
+            @CookieValue("refreshToken") String refreshToken) {
 
-        return ResponseEntity.ok(
-                authService.refreshToken(request.getRefreshToken())
-        );
+        AuthResponse response = authService.refreshToken(refreshToken);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<String> logout(
+            @CookieValue("refreshToken") String refreshToken,
+            HttpServletResponse response) {
 
-        authService.logout(request.getRefreshToken());
+        authService.logout(refreshToken);
+
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
 
         return ResponseEntity.ok("Logged out successfully");
     }
