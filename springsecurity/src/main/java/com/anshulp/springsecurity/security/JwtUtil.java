@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Base64;
@@ -46,7 +47,8 @@ public class JwtUtil {
 
     private Key signingKey;
 
-    private JwtUtil() {
+    @PostConstruct
+    public void init() {
         signingKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret));
     }
 

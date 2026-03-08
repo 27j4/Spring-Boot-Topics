@@ -3,6 +3,7 @@ package com.anshulp.springsecurity.config;
 import com.anshulp.springsecurity.security.CustomUserDetailsService;
 import com.anshulp.springsecurity.security.JwtAuthenticationFilter;
 import com.anshulp.springsecurity.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,16 +20,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
-
-    public SecurityConfig(CustomUserDetailsService userDetailsService,
-                          JwtUtil jwtUtil) {
-        this.userDetailsService = userDetailsService;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -53,10 +49,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
+                .headers(headers ->
+                        headers.frameOptions(frame -> frame.disable())
+                )
+
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
 
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
