@@ -1,7 +1,9 @@
 package com.anshulp.springsecurity.controller;
 
 import com.anshulp.springsecurity.dto.LoginRequest;
+import com.anshulp.springsecurity.dto.RegisterRequest;
 import com.anshulp.springsecurity.security.JwtUtil;
+import com.anshulp.springsecurity.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +18,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
@@ -40,5 +43,10 @@ public class AuthController {
 
         String username = authentication.getName();
         return jwtUtil.generateToken(username);
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 }
