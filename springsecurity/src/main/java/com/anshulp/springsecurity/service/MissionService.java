@@ -28,7 +28,7 @@ public class MissionService {
     }
 
     @PreAuthorize("hasAuthority('MISSION_CREATE')")
-    public MissionResponse createOrder(MissionRequest missionRequest, User user) {
+    public MissionResponse createMission(MissionRequest missionRequest, User user) {
         Mission mission = new Mission();
         mission.setMissionName(missionRequest.getMissionName());
         mission.setMissionType(missionRequest.getMissionType());
@@ -39,7 +39,7 @@ public class MissionService {
     }
 
     @PreAuthorize("hasAuthority('MISSION_DELETE')")
-    public String deleteOrder(Long missionId, User user) {
+    public String deleteMission(Long missionId, User user) {
         Mission mission = missionRepository.findById(missionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Mission not found with id: " + missionId));
         if (!mission.getUser().getId().equals(user.getId())) {

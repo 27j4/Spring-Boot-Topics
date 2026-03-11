@@ -1,8 +1,8 @@
 package com.anshulp.springsecurity.controller;
 
+import com.anshulp.springsecurity.dto.AdminRegisterRequest;
 import com.anshulp.springsecurity.dto.AuthResponse;
 import com.anshulp.springsecurity.dto.LoginRequest;
-import com.anshulp.springsecurity.dto.RefreshTokenRequest;
 import com.anshulp.springsecurity.dto.RegisterRequest;
 import com.anshulp.springsecurity.service.AuthService;
 
@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,9 +47,23 @@ public class AuthController {
         );
     }
 
+    /**
+     * Register endpoint for general users
+     * Anyone can register as a USER without authorization
+     */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
+    }
+
+    /**
+     * Register endpoint for creating new users with specific roles
+     * Only ADMIN users can call this endpoint
+     */
+    @PostMapping("/register-admin")
+    @PreAuthorize("hasAuthority('ADMIN_CREATE')")
+    public ResponseEntity<String> registerAdmin(@RequestBody AdminRegisterRequest request) {
+        return ResponseEntity.ok(authService.registerAdmin(request));
     }
 
     @PostMapping("/refresh")

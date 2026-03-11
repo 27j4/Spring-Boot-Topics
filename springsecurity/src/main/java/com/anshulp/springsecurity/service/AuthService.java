@@ -1,5 +1,6 @@
 package com.anshulp.springsecurity.service;
 
+import com.anshulp.springsecurity.dto.AdminRegisterRequest;
 import com.anshulp.springsecurity.dto.AuthResponse;
 import com.anshulp.springsecurity.dto.LoginRequest;
 import com.anshulp.springsecurity.dto.RegisterRequest;
@@ -29,6 +30,10 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Register a new regular user (USER role only)
+     * Anyone can register as a regular user without authorization
+     */
     public String register(RegisterRequest request) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -43,12 +48,38 @@ public class AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(Role.USER)  // Changed from ADMIN to USER
                 .build();
 
         userRepository.save(user);
 
         return "User registered successfully";
+    }
+
+    /**
+     * Register a new user with a specific role (ADMIN/USER)
+     * Only ADMIN users can call this method (enforced via @PreAuthorize in controller)
+     */
+    public String registerAdmin(AdminRegisterRequest request) {
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UserAlreadyExistsException("Username already exists");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsException("Email already exists");
+        }
+
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())  // Allow specifying role (ADMIN or USER)
+                .build();
+
+        userRepository.save(user);
+
+        return "User registered successfully with role: " + request.getRole().name();
     }
 
     public AuthResponse login(LoginRequest request) {

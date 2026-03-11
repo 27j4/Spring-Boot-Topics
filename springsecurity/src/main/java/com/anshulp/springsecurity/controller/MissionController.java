@@ -20,23 +20,23 @@ public class MissionController {
     private final MissionService missionService;
 
     @PostMapping("/create")
-    public ResponseEntity<MissionResponse> createOrder(@RequestBody MissionRequest missionRequest,
-                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<MissionResponse> createMission(@RequestBody MissionRequest missionRequest,
+                                                         @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         User user = customUserDetails.getUser();
-        MissionResponse missionResponse = missionService.createOrder(missionRequest, user);
+        MissionResponse missionResponse = missionService.createMission(missionRequest, user);
         return ResponseEntity.ok(missionResponse);
     }
 
     @DeleteMapping("/delete/{missionId}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long missionId,
-                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<String> deleteMission(@PathVariable Long missionId,
+                                                @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         User user = customUserDetails.getUser();
-        String response = missionService.deleteOrder(missionId, user);
+        String response = missionService.deleteMission(missionId, user);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<MissionResponse>> getOrders() {
+    public ResponseEntity<List<MissionResponse>> getMission() {
         return ResponseEntity.ok(missionService.getAllMission());
     }
 }
