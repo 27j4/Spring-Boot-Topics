@@ -6,27 +6,25 @@ import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "missions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+public class Mission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String product;
+    private String missionName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MissionType missionType;
 
     @Column(nullable = false)
-    @Min(value = 1, message = "Quantity must be at least 1")
-    @Max(value = 10, message = "Quantity must be at most 10")
-    private int quantity;
-
-    @Column(nullable = false)
-    @Min(value = 100, message = "Price must be at least 100")
-    private double price;
+    private String spaceAgency;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

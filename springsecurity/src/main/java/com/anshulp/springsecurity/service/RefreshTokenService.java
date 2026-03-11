@@ -2,6 +2,8 @@ package com.anshulp.springsecurity.service;
 
 import com.anshulp.springsecurity.entity.RefreshToken;
 import com.anshulp.springsecurity.entity.User;
+import com.anshulp.springsecurity.error.ResourceNotFoundException;
+import com.anshulp.springsecurity.error.TokenExpiredException;
 import com.anshulp.springsecurity.repository.RefreshTokenRepository;
 import com.anshulp.springsecurity.repository.UserRepository;
 
@@ -36,22 +38,21 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-    public RefreshToken verifyExpiration(RefreshToken token) {
+    public void verifyExpiration(RefreshToken token) {
 
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
 
             refreshTokenRepository.delete(token);
 
-            throw new RuntimeException("Refresh token expired. Please login again");
+            throw new TokenExpiredException("Refresh token expired. Please login again");
         }
 
-        return token;
     }
 
     public RefreshToken findByToken(String token) {
 
         return refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Refresh token not found"));
     }
 
     public void deleteByToken(String token) {

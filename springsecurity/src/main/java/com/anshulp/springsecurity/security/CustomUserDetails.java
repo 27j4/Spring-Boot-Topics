@@ -7,7 +7,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -18,11 +20,17 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    // this function is used to get the authorities of the user
+    // which is used to check the role of the user
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
-        );
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        Set<SimpleGrantedAuthority> permissionAuthorities = user.getRole().getPermissions().stream().map(permission ->
+                        new SimpleGrantedAuthority(permission.name()))
+                .collect(Collectors.toSet());
+        authorities.addAll(permissionAuthorities);
+        return authorities;
     }
 
     @Override

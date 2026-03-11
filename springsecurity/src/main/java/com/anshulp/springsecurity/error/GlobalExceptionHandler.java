@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -72,6 +73,81 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handle ResourceNotFoundException
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> handleResourceNotFoundException(
+            ResourceNotFoundException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                ex.getMessage(),
+                java.time.LocalDateTime.now(),
+                request.getRequestURI(),
+                "404"
+        );
+        return ResponseEntity.status(404).body(error);
+    }
+
+    /**
+     * Handle TokenExpiredException
+     */
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ApiError> handleTokenExpiredException(
+            TokenExpiredException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                ex.getMessage(),
+                java.time.LocalDateTime.now(),
+                request.getRequestURI(),
+                "401"
+        );
+        return ResponseEntity.status(401).body(error);
+    }
+
+    /**
+     * Handle ForbiddenException
+     */
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiError> handleForbiddenException(
+            ForbiddenException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                ex.getMessage(),
+                java.time.LocalDateTime.now(),
+                request.getRequestURI(),
+                "403"
+        );
+        return ResponseEntity.status(403).body(error);
+    }
+
+    /**
+     * Handle InvalidTokenException
+     */
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiError> handleInvalidTokenException(
+            InvalidTokenException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                ex.getMessage(),
+                java.time.LocalDateTime.now(),
+                request.getRequestURI(),
+                "401"
+        );
+        return ResponseEntity.status(401).body(error);
+    }
+
+    /**
+     * Handle AccessDeniedException
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDeniedException(
+            AccessDeniedException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                ex.getMessage(),
+                java.time.LocalDateTime.now(),
+                request.getRequestURI(),
+                "403"
+        );
+        return ResponseEntity.status(403).body(error);
+    }
+
+    /**
      * Handle Spring Security AuthenticationException (bad credentials, etc.)
      */
     @ExceptionHandler(AuthenticationException.class)
@@ -119,6 +195,21 @@ public class GlobalExceptionHandler {
                 "400"
         );
         return ResponseEntity.status(400).body(error);
+    }
+
+    /**
+     * Handle missing endpoint/static resource errors as 404
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResourceFoundException(
+            NoResourceFoundException ex, HttpServletRequest request) {
+        ApiError error = new ApiError(
+                ex.getMessage(),
+                java.time.LocalDateTime.now(),
+                request.getRequestURI(),
+                "404"
+        );
+        return ResponseEntity.status(404).body(error);
     }
 
     /**
