@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -55,10 +57,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/auth/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/missions/all").hasAuthority(Permission.MISSION_READ.name())
-//                        .requestMatchers(HttpMethod.POST, "/missions/create").hasAuthority(Permission.MISSION_CREATE.name())
-//                        .requestMatchers(HttpMethod.DELETE, "/missions/delete/**").hasAuthority(Permission.MISSION_DELETE.name())
+                                .requestMatchers("/auth/login", "/auth/register", "/auth/refresh").permitAll()
                                 .anyRequest().authenticated()
                 )
 

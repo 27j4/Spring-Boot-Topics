@@ -30,6 +30,14 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public String register(RegisterRequest request) {
+        return createUser(request, Role.USER);
+    }
+
+    public String registerAdmin(RegisterRequest request) {
+        return createUser(request, Role.ADMIN);
+    }
+
+    private String createUser(RegisterRequest request, Role role) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new UserAlreadyExistsException("Username already exists");
@@ -43,12 +51,12 @@ public class AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(role)
                 .build();
 
         userRepository.save(user);
 
-        return "User registered successfully";
+        return role == Role.ADMIN ? "Admin registered successfully" : "User registered successfully";
     }
 
     public AuthResponse login(LoginRequest request) {
