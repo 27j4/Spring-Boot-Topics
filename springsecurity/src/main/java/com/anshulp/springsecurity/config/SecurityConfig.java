@@ -57,6 +57,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers(("/actuator/**")).permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/missions/all").hasAuthority(Permission.MISSION_READ.name())
 //                        .requestMatchers(HttpMethod.POST, "/missions/create").hasAuthority(Permission.MISSION_CREATE.name())
 //                        .requestMatchers(HttpMethod.DELETE, "/missions/delete/**").hasAuthority(Permission.MISSION_DELETE.name())
