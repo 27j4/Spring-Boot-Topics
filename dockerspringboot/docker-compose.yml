@@ -1,0 +1,36 @@
+services:
+
+  postgres: # PostgreSQL database service
+    image: postgres:15 # Uses postgres version 15 image from Docker Hub
+    container_name: postgres_db # Custom name for the container
+
+    environment: # Environment variables used to initialize the DB
+      POSTGRES_DB: mydb # Database name
+      POSTGRES_USER: postgres # Database username
+      POSTGRES_PASSWORD: password # Database password
+
+    ports:
+      - "5432:5432" # Maps host port 5432 to container port 5432
+
+    healthcheck: # Checks if the database is ready to accept connections
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mydb"] # Command to verify DB readiness
+      interval: 10s # Run health check every 10 seconds
+      timeout: 5s # Wait 5 seconds for a response
+      retries: 5 # Mark container unhealthy after 5 failures
+
+  app: # Spring Boot application service
+    build: . # Build Docker image using Dockerfile in current directory
+    container_name: spring_app # Custom name for app container
+
+    ports:
+      - "8080:8080" # Maps host port 8080 to container port 8080
+
+    environment: # Environment variables used by the application to connect to DB
+      DB_HOST: postgres # Hostname of DB (service name used as DNS in Docker network)
+      DB_NAME: mydb # Database name
+      DB_USER: postgres # Database username
+      DB_PASSWORD: password # Database password
+
+    depends_on: # Ensures app starts after DB is ready
+      postgres:
+        condition: service_healthy # Wait until postgres healthcheck passes
