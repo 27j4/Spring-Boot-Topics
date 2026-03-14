@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,8 +26,11 @@ public class Applicant {
     private String phone;
     private String status = "Active";
 
-    @OneToOne(mappedBy = "applicant")
+    @OneToOne(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Resume resume;
+
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Application> applications;
 
     @PrePersist
     @SuppressWarnings("unused")

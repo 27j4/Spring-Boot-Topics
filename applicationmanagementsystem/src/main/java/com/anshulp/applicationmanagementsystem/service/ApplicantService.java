@@ -5,6 +5,7 @@ import com.anshulp.applicationmanagementsystem.dto.ApplicantResponseDto;
 import com.anshulp.applicationmanagementsystem.entity.Applicant;
 import com.anshulp.applicationmanagementsystem.entity.Resume;
 import com.anshulp.applicationmanagementsystem.repository.ApplicantJpaRepository;
+import com.anshulp.applicationmanagementsystem.repository.ResumeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,11 +22,12 @@ public class ApplicantService {
 
     private final ApplicantJpaRepository applicantJpaRepository;
 
-    public List<ApplicantResponseDto> getAllApplicants() {
+    public List<Applicant> getAllApplicants() {
         List<Applicant> applicants = applicantJpaRepository.findAll();
-        return applicants.stream()
-                .map(applicant -> new ApplicantResponseDto(applicant.getId(), applicant.getName(), applicant.getEmail(), applicant.getPhone(), applicant.getStatus()))
-                .collect(Collectors.toList());
+        return applicants;
+//        return applicants.stream()
+//                .map(applicant -> new ApplicantResponseDto(applicant.getId(), applicant.getName(), applicant.getEmail(), applicant.getPhone(), applicant.getStatus()))
+//                .collect(Collectors.toList());
     }
 
     public ApplicantResponseDto createApplicant(ApplicantRequestDto requestDto) {

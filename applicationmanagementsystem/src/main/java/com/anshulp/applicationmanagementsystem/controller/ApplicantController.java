@@ -2,6 +2,8 @@ package com.anshulp.applicationmanagementsystem.controller;
 
 import com.anshulp.applicationmanagementsystem.dto.ApplicantRequestDto;
 import com.anshulp.applicationmanagementsystem.dto.ApplicantResponseDto;
+import com.anshulp.applicationmanagementsystem.entity.Applicant;
+import com.anshulp.applicationmanagementsystem.entity.Application;
 import com.anshulp.applicationmanagementsystem.entity.Resume;
 import com.anshulp.applicationmanagementsystem.service.ApplicantService;
 import jakarta.validation.Valid;
@@ -19,7 +21,7 @@ public class ApplicantController {
     private final ApplicantService applicantService;
 
     @GetMapping
-    public List<ApplicantResponseDto> getAllApplicants() {
+    public List<Applicant> getAllApplicants() {
         return applicantService.getAllApplicants();
     }
 
