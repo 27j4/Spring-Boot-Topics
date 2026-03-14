@@ -29,15 +29,15 @@ public class Applicant {
     @OneToOne(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Resume resume;
 
-    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<Application> applications;
 
-    @ManyToMany
     @JoinTable(
             name = "applicant_jobs",
             joinColumns = @JoinColumn(name = "applicantId"),
             inverseJoinColumns = @JoinColumn(name = "jobId")
     )
+    @ManyToMany
     private List<Job> appliedJobs;
 
     @PrePersist

@@ -25,6 +25,17 @@ public class ApplicantController {
         return applicantService.getAllApplicants();
     }
 
+    @GetMapping("/{id}")
+    public ApplicantResponseDto getApplicantById(@PathVariable Long id) {
+        Applicant applicant = applicantService.getApplicantById(id);
+        return new ApplicantResponseDto(applicant.getId(), applicant.getName(), applicant.getEmail(), applicant.getPhone(), applicant.getStatus());
+    }
+
+    @GetMapping("/getApplications/cache")
+    public List<Application> method2(){
+        return applicantService.method2();
+    }
+
     @PostMapping
     public ApplicantResponseDto createApplicant(@Valid @RequestBody ApplicantRequestDto applicantRequestDto) {
         return applicantService.createApplicant(applicantRequestDto);
@@ -46,6 +57,11 @@ public class ApplicantController {
     @GetMapping("/{applicantId}/resume")
     public Resume getResumeByApplicantId(@PathVariable Long applicantId) {
         return applicantService.getResumeByApplicantId(applicantId);
+    }
+
+    @PostMapping("/{applicantId}/update-status")
+    public ApplicantResponseDto updateApplicantStatus(@PathVariable Long applicantId, @RequestParam String status) {
+        return applicantService.updateApplicantStatus(applicantId, status);
     }
 
 }
