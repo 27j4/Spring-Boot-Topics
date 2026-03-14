@@ -32,6 +32,14 @@ public class Applicant {
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Application> applications;
 
+    @ManyToMany
+    @JoinTable(
+            name = "applicant_jobs",
+            joinColumns = @JoinColumn(name = "applicantId"),
+            inverseJoinColumns = @JoinColumn(name = "jobId")
+    )
+    private List<Job> appliedJobs;
+
     @PrePersist
     @SuppressWarnings("unused")
     public void prePersist() {
