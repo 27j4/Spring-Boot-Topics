@@ -2,6 +2,7 @@ package com.anshulp.applicationmanagementsystem.controller;
 
 import com.anshulp.applicationmanagementsystem.dto.ApplicantRequestDto;
 import com.anshulp.applicationmanagementsystem.dto.ApplicantResponseDto;
+import com.anshulp.applicationmanagementsystem.entity.Resume;
 import com.anshulp.applicationmanagementsystem.service.ApplicantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,12 @@ public class ApplicantController {
             @RequestParam String name) {
         return applicantService.getApplicantsByPartialName(page, size, name);
     }
+
+    @GetMapping("/{applicantId}/resume")
+    public Resume getResumeByApplicantId(@PathVariable Long applicantId) {
+        return applicantService.getResumeByApplicantId(applicantId);
+    }
+
 }
 
 

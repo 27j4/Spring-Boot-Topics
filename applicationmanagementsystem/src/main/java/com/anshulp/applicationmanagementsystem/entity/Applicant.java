@@ -24,6 +24,9 @@ public class Applicant {
     private String phone;
     private String status = "Active";
 
+    @OneToOne(mappedBy = "applicant")
+    private Resume resume;
+
     @PrePersist
     @SuppressWarnings("unused")
     public void prePersist() {

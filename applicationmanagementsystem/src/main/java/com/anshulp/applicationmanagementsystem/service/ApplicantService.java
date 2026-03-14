@@ -3,6 +3,7 @@ package com.anshulp.applicationmanagementsystem.service;
 import com.anshulp.applicationmanagementsystem.dto.ApplicantRequestDto;
 import com.anshulp.applicationmanagementsystem.dto.ApplicantResponseDto;
 import com.anshulp.applicationmanagementsystem.entity.Applicant;
+import com.anshulp.applicationmanagementsystem.entity.Resume;
 import com.anshulp.applicationmanagementsystem.repository.ApplicantJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,5 +48,11 @@ public class ApplicantService {
         Pageable pageable = PageRequest.of(page, size);
         return applicantJpaRepository.findByPartial(pageable, name)
                 .map(applicant -> new ApplicantResponseDto(applicant.getId(), applicant.getName(), applicant.getEmail(), applicant.getPhone(), applicant.getStatus()));
+    }
+
+    public Resume getResumeByApplicantId(Long applicantId) {
+        Applicant applicant = applicantJpaRepository.findById(applicantId)
+                .orElseThrow(() -> new RuntimeException("Applicant not found with id: " + applicantId));
+        return applicant.getResume();
     }
 }
