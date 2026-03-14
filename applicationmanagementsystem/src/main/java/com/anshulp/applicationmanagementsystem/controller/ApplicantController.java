@@ -1,0 +1,44 @@
+package com.anshulp.applicationmanagementsystem.controller;
+
+import com.anshulp.applicationmanagementsystem.dto.ApplicantRequestDto;
+import com.anshulp.applicationmanagementsystem.dto.ApplicantResponseDto;
+import com.anshulp.applicationmanagementsystem.service.ApplicantService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/applicants")
+@RequiredArgsConstructor
+public class ApplicantController {
+
+    private final ApplicantService applicantService;
+
+    @GetMapping
+    public List<ApplicantResponseDto> getAllApplicants() {
+        return applicantService.getAllApplicants();
+    }
+
+    @PostMapping
+    public ApplicantResponseDto createApplicant(@Valid @RequestBody ApplicantRequestDto applicantRequestDto) {
+        return applicantService.createApplicant(applicantRequestDto);
+    }
+
+    @GetMapping("/page")
+    public Page<ApplicantResponseDto> getApplicantsWithPagination(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return applicantService.getApplicantsWithPagination(page, size);
+    }
+
+    @GetMapping("/partial")
+    public Page<ApplicantResponseDto> getApplicantsByPartialName(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String name) {
+        return applicantService.getApplicantsByPartialName(page, size, name);
+    }
+}
+
+
