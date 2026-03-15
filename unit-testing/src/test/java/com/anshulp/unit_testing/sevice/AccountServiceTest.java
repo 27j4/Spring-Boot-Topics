@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /*
 1. Create mock dependencies
@@ -76,6 +76,16 @@ class AccountServiceTest {
         assertEquals(username, retrievedAccount.getUsername());
         assertEquals(email, retrievedAccount.getEmail());
     }
+
+    // mocking void methods
+    @Test
+    public void testDeleteAccount_Success() {
+        doNothing().when(accountRepository).deleteById(1L);
+        when(accountRepository.existsById(1L)).thenReturn(true);
+        accountService.deleteAccount(1L);
+        verify(accountRepository, times(1)).deleteById(1L);
+    }
+
 
     @Test
     public void testDeleteAccount() {
