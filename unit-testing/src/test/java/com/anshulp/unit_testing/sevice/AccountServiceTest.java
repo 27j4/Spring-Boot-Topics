@@ -49,7 +49,6 @@ class AccountServiceTest {
         Account createdAccount = accountService.createAccount(account);
 
         // Then
-
         assertNotNull(createdAccount);
         assertEquals(username, createdAccount.getUsername()); // expected vs actual
         assertEquals(email, createdAccount.getEmail());
