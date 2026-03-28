@@ -1,0 +1,36 @@
+anshulp@BMDVANSHULP voting-app-kubernetes % kubectl get all  
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP        27h
+service/postgres     ClusterIP   10.43.250.65    <none>        5432/TCP       6m53s
+service/redis        ClusterIP   10.43.90.204    <none>        6379/TCP       6m53s
+service/result       NodePort    10.43.214.184   <none>        80:30002/TCP   6m53s
+service/vote         NodePort    10.43.253.64    <none>        80:30001/TCP   6m53s
+anshulp@BMDVANSHULP voting-app-kubernetes % kubectl create -f . 
+pod/db created
+pod/redis created
+pod/result created
+pod/vote created
+pod/worker created
+Error from server (AlreadyExists): error when creating "db-service.yaml": services "postgres" already exists
+Error from server (AlreadyExists): error when creating "redis-service.yaml": services "redis" already exists
+Error from server (Invalid): error when creating "result-service.yaml": Service "result" is invalid: spec.ports[0].nodePort: Invalid value: 30002: provided port is already allocated
+Error from server (Invalid): error when creating "vote-service.yaml": Service "vote" is invalid: spec.ports[0].nodePort: Invalid value: 30001: provided port is already allocated
+anshulp@BMDVANSHULP voting-app-kubernetes % clear
+anshulp@BMDVANSHULP voting-app-kubernetes % kubectl get all
+NAME         READY   STATUS    RESTARTS   AGE
+pod/db       1/1     Running   0          20s
+pod/redis    1/1     Running   0          20s
+pod/result   1/1     Running   0          20s
+pod/vote     1/1     Running   0          20s
+pod/worker   1/1     Running   0          20s
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP        27h
+service/postgres     ClusterIP   10.43.250.65    <none>        5432/TCP       7m40s
+service/redis        ClusterIP   10.43.90.204    <none>        6379/TCP       7m40s
+service/result       NodePort    10.43.214.184   <none>        80:30002/TCP   7m40s
+service/vote         NodePort    10.43.253.64    <none>        80:30001/TCP   7m40s
+anshulp@BMDVANSHULP voting-app-kubernetes % kubectl get nodes -o wide 
+NAME                   STATUS   ROLES           AGE   VERSION        INTERNAL-IP    EXTERNAL-IP    OS-IMAGE             KERNEL-VERSION   CONTAINER-RUNTIME
+lima-rancher-desktop   Ready    control-plane   27h   v1.34.5+k3s1   192.168.5.15   192.168.64.2   Alpine Linux v3.22   6.6.116-0-virt   docker://28.3.3
+anshulp@BMDVANSHULP voting-app-kubernetes % 
