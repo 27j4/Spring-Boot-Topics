@@ -1,0 +1,90 @@
+anshulp@BMDVANSHULP SpringBootCodeSnippet % cd voting-app-kubernetes-deployment 
+anshulp@BMDVANSHULP voting-app-kubernetes-deployment % cd main 
+anshulp@BMDVANSHULP main % kubectl get all
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   27h
+anshulp@BMDVANSHULP main % kubectl create -f .
+deployment.apps/db created
+service/postgres created
+deployment.apps/redis created
+service/redis created
+deployment.apps/result created
+service/result created
+deployment.apps/vote created
+service/vote created
+deployment.apps/worker created
+anshulp@BMDVANSHULP main % kubectl get all
+NAME                          READY   STATUS         RESTARTS   AGE
+pod/db-b57cc469-cm69t         1/1     Running        0          10s
+pod/redis-664fbf775b-b8q6z    1/1     Running        0          10s
+pod/result-5594b6c5cd-l5bwf   0/1     ErrImagePull   0          10s
+pod/vote-6c9d97d868-k6srs     1/1     Running        0          10s
+pod/worker-6cf8cfc765-lkvqq   1/1     Running        0          10s
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP        27h
+service/postgres     ClusterIP   10.43.224.207   <none>        5432/TCP       10s
+service/redis        ClusterIP   10.43.215.192   <none>        6379/TCP       10s
+service/result       NodePort    10.43.53.211    <none>        80:30002/TCP   10s
+service/vote         NodePort    10.43.187.69    <none>        80:30001/TCP   10s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/db       1/1     1            1           10s
+deployment.apps/redis    1/1     1            1           10s
+deployment.apps/result   0/1     1            0           10s
+deployment.apps/vote     1/1     1            1           10s
+deployment.apps/worker   1/1     1            1           10s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/db-b57cc469         1         1         1       10s
+replicaset.apps/redis-664fbf775b    1         1         1       10s
+replicaset.apps/result-5594b6c5cd   1         1         0       10s
+replicaset.apps/vote-6c9d97d868     1         1         1       10s
+replicaset.apps/worker-6cf8cfc765   1         1         1       10s
+anshulp@BMDVANSHULP main % kubectl create -f result-app-deploy.yaml 
+Error from server (AlreadyExists): error when creating "result-app-deploy.yaml": deployments.apps "result" already exists
+anshulp@BMDVANSHULP main % kubectl delete deploy result-app-deploy.yaml 
+Error from server (NotFound): deployments.apps "result-app-deploy.yaml" not found
+anshulp@BMDVANSHULP main % kubectl delete deployment.apps/result
+deployment.apps "result" deleted from default namespace
+anshulp@BMDVANSHULP main % kubectl create -f result-app-deploy.yaml    
+deployment.apps/result created
+anshulp@BMDVANSHULP main % kubectl get all
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/db-b57cc469-cm69t         1/1     Running   0          2m33s
+pod/redis-664fbf775b-b8q6z    1/1     Running   0          2m33s
+pod/result-79ddb4cfc6-dqnww   1/1     Running   0          7s
+pod/vote-6c9d97d868-k6srs     1/1     Running   0          2m33s
+pod/worker-6cf8cfc765-lkvqq   1/1     Running   0          2m33s
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP        27h
+service/postgres     ClusterIP   10.43.224.207   <none>        5432/TCP       2m33s
+service/redis        ClusterIP   10.43.215.192   <none>        6379/TCP       2m33s
+service/result       NodePort    10.43.53.211    <none>        80:30002/TCP   2m33s
+service/vote         NodePort    10.43.187.69    <none>        80:30001/TCP   2m33s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/db       1/1     1            1           2m33s
+deployment.apps/redis    1/1     1            1           2m33s
+deployment.apps/result   1/1     1            1           7s
+deployment.apps/vote     1/1     1            1           2m33s
+deployment.apps/worker   1/1     1            1           2m33s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/db-b57cc469         1         1         1       2m33s
+replicaset.apps/redis-664fbf775b    1         1         1       2m33s
+replicaset.apps/result-79ddb4cfc6   1         1         1       7s
+replicaset.apps/vote-6c9d97d868     1         1         1       2m33s
+replicaset.apps/worker-6cf8cfc765   1         1         1       2m33s
+anshulp@BMDVANSHULP main % kubectl delete -f .
+deployment.apps "db" deleted from default namespace
+service "postgres" deleted from default namespace
+deployment.apps "redis" deleted from default namespace
+service "redis" deleted from default namespace
+deployment.apps "result" deleted from default namespace
+service "result" deleted from default namespace
+deployment.apps "vote" deleted from default namespace
+service "vote" deleted from default namespace
+deployment.apps "worker" deleted from default namespace
+anshulp@BMDVANSHULP main % 
