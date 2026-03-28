@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,14 +47,38 @@ public class AccountControllerTest {
 
         // then
         mockMvc.perform(post("/accounts/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.username").value(username))
                 .andExpect(jsonPath("$.email").value(email));
+    }
 
+    @Test
+    public void testDeleteAccount() throws Exception {
+        // Given
+        Long accountId = 1L;
 
+        // when
+        when(accountService.getAccountById(accountId)).thenReturn(new Account());
+
+        // then
+        mockMvc.perform(delete("/accounts/%d".formatted(accountId)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteAccount_NotFound() throws Exception {
+        // Given
+        Long accountId = 1L;
+
+        // when
+        when(accountService.getAccountById(accountId)).thenThrow(new RuntimeException("Account not found"));
+
+        // then
+        mockMvc.perform(delete("/accounts/%d".formatted(accountId)))
+                .andExpect(status().isInternalServerError());
     }
 
 }

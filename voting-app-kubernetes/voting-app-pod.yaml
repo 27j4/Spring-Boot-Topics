@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vote
+  labels:
+    app: vote
+spec:
+  containers:
+    - name: vote
+      image: dockersamples/examplevotingapp_vote
+      ports:
+        # just to make it clear that this app is running on this port, not for service discovery
+        - containerPort: 80
+          name: vote
